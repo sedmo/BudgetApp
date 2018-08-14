@@ -133,7 +133,8 @@ var UIController = (function () {
         incomeLabel: '.budget__income--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        expensesPercLabel: '.item__percentage'
+        expensesPercLabel: '.item__percentage',
+        dateLabel: '.budget__title--month'
     };
 
     let formatNumber = function (num, type) {
@@ -254,6 +255,29 @@ var UIController = (function () {
                 current.textContent = percentages[ind] > 0 ? `${percentages[ind]}%` : '---';
             }))
         },
+        displayMonth: function(){
+            var now, year, month, monthArr;
+
+            monthArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            now = new Date();
+            month = now.getMonth();
+            year = now.getFullYear();
+            document.querySelector(DOMstrings.dateLabel).textContent = `${monthArr[month]} ${year}`;
+
+            //month = ;
+        },
+        changedType: function(){
+            //select .red-focus for elements
+            let fields = document.querySelectorAll(DOMstrings.inputDescription + ', ' + DOMstrings.inputType+ ', ' + DOMstrings.inputValue);
+
+            //will add redfocus when user changes from inc to exp (+ to -)
+            fields.forEach(val => val.classList.toggle('red-focus'));
+            
+            
+            //select .red for button and toggle red when user clicks change
+            let button = document.querySelector(DOMstrings.inputBtn).classList.toggle('red');
+
+        },
         getDOMstrings: function () {
             return DOMstrings;
         }
@@ -279,6 +303,8 @@ var controller = (function (budCtrl, UICtrl) {
 
         //create event for when delete button is pressed 
         document.querySelector(DOM.container).addEventListener('click', ctrlDeleteItem);
+        //create event for when user creates an income or expense
+        document.querySelector(DOM.inputType).addEventListener('change', UICtrl.changedType);
     };
 
     let updateBudget = function () {
@@ -349,6 +375,8 @@ var controller = (function (budCtrl, UICtrl) {
     return {
         init: function () {
             console.log('Application has started');
+            //
+            UICtrl.displayMonth();
             //let's initialize the UI with 0's 
             UICtrl.displayBudget({
                 budget: 0,
